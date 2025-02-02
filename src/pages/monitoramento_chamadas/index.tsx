@@ -199,7 +199,7 @@ export default function CalledMonitoring() {
     <div className="w-[100vw] max-w-[100vw] h-[100v] flex relative">
       <Drawer />
       <ScrollArea className="flex-1 h-[100vh]">
-        <div className="w-full flex flex-col relative justify-center items-center bg-primary pt-20 ">
+        <div className="w-full min-h-[100vh] flex flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
             <form className="flex flex-col bg-muted p-6 w-full">
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
