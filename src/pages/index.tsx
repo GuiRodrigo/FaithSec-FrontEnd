@@ -3,8 +3,16 @@ import { useAuth } from "@/hooks/auth";
 import { useRouter } from "next/router";
 
 export default function Home() {
-  const { isLogged } = useAuth();
+  const { userData } = useAuth();
   const router = useRouter();
+
+  function handleAcessButton() {
+    if (!userData) {
+      router.push("/login");
+    } else {
+      router.push("/home");
+    }
+  }
 
   return (
     <div className="w-[100vw] h-[100vh] bg-primary flex flex-col items-center justify-center flex-1">
@@ -27,11 +35,11 @@ export default function Home() {
         </div>
       </div>
       <Button
-        onClick={() => router.push("/login")}
+        onClick={() => handleAcessButton()}
         className="bg-secondary active:bg-muted-foreground text-foreground font-bold text-lg px-10"
         type="button"
       >
-        LOGIN
+        {!userData ? "LOGIN" : "ACESSAR"}
       </Button>
     </div>
   );

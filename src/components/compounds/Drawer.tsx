@@ -16,38 +16,41 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const drawerItens: Item[] = [
-  { icon: "user_pen", title: "CADASTRO ENFERMEIRO" },
-  { icon: "phone", title: "MONITORAMENTO CHAMADAS" },
-  { icon: "nurse_monitoring", title: "MONITORAMENTO ENFERMEIROS" },
-  { icon: "badge", title: "CRACHÁ HABLITAR/DESABILITAR" },
-  { icon: "book", title: "MANUAL" },
-  { icon: "settings", title: "CONFIGURAÇÕES" },
+  { screen: "cadastro_enfermeiro", title: "CADASTRO ENFERMEIRO" },
+  { screen: "monitoramento_chamadas", title: "MONITORAMENTO CHAMADAS" },
+  { screen: "monitoramento_enfermeiro", title: "MONITORAMENTO ENFERMEIROS" },
+  { screen: "cracha_hab_desab", title: "CRACHÁ HABLITAR/DESABILITAR" },
+  { screen: "manual", title: "MANUAL" },
+  { screen: "configuracoes", title: "CONFIGURAÇÕES" },
 ];
 
-const icons: Record<string, LucideIcon> = {
-  user_pen: UserPen,
-  phone: PhoneCall,
-  nurse_monitoring: Stethoscope,
-  badge: IdCard,
-  book: BookOpenText,
-  settings: Settings,
+const screens: Record<string, LucideIcon> = {
+  cadastro_enfermeiro: UserPen,
+  monitoramento_chamadas: PhoneCall,
+  monitoramento_enfermeiro: Stethoscope,
+  cracha_hab_desab: IdCard,
+  manual: BookOpenText,
+  configuracoes: Settings,
 };
 
 type Item = {
   title: string;
-  icon: keyof typeof icons; // Apenas chaves válidas do objeto `icons`
+  screen: keyof typeof screens; // Apenas chaves válidas do objeto `icons`
 };
 
-export function Drawer() {
+export function Drawer({ isExpanded = false }: { isExpanded?: boolean }) {
   const { userData, setUserData } = useAuth();
   const router = useRouter();
 
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(isExpanded);
 
-  function renderDrawerItem({ icon, title }: Item) {
-    const IconComponent = icons[icon];
+  function renderDrawerItem({ screen, title }: Item) {
+    const IconComponent = screens[screen];
     return (
       <div
+        onClick={() => {
+          router.push(screen);
+        }}
         className="flex cursor-pointer px-10 py-2 hover:bg-muted rounded-2xl gap-2 items-center"
         key={title}
       >

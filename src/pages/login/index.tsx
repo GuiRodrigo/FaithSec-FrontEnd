@@ -14,7 +14,7 @@ const createUserFormSchema = z.object({
   username: z
     .string()
     .nonempty("Usuário é obrigatório.")
-    .regex(/^[A-Za-z]+$/i, "Only letters are allowed"),
+    .regex(/^[A-Za-z]+$/i, "Somente letras"),
   password: z.string().nonempty("Senha é obrigatória."),
 });
 
