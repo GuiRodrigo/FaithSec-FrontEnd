@@ -46,7 +46,7 @@ const createNourseFormSchema = z.object({
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
 
-export default function NourseMonitoring() {
+export default function NourseRegister() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
