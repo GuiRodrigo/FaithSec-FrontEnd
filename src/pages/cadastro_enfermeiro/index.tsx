@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/compounds/DatePicker";
 
 const createNourseFormSchema = z.object({
   name: z
@@ -27,7 +28,8 @@ const createNourseFormSchema = z.object({
   phone: z
     .string()
     .min(15, "Telefone inválido") // Garante que todos os dígitos foram preenchidos
-    .regex(/^\(\d{2}\) \d{5}-\d{4}$/, "Formato inválido"),
+    .regex(/^\(\d{2}\) \d{5}-\d{4}$/, "Formato inválido")
+    .nonempty("Telefone é obrigatória."),
   email: z.string().nonempty("Email é obrigatória."),
   role: z
     .string({ required_error: "Selecione um cargo!" })
@@ -37,9 +39,9 @@ const createNourseFormSchema = z.object({
     .nonempty("CPF é obrigatório.")
     .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "Formato de CPF inválido."),
   coren: z.string().nonempty("Coren é obrigatório."),
-  nfc: z.string().nonempty("Coren é obrigatório."),
-  address: z.string().nonempty("Coren é obrigatório."),
-  password: z.string().nonempty("Coren é obrigatório."),
+  nfc: z.string().nonempty("Identificador único é obrigatório."),
+  address: z.string().nonempty("Endereço é obrigatório."),
+  password: z.string().nonempty("Senha é obrigatória."),
 });
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
@@ -47,6 +49,7 @@ type createNourseFormData = z.infer<typeof createNourseFormSchema>;
 export default function NourseMonitoring() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<Date | undefined>();
 
   const {
     register,
@@ -61,14 +64,17 @@ export default function NourseMonitoring() {
 
   const onSubmit = (data: createNourseFormData) => {
     setIsLoading(true);
-    console.log(data);
     setIsLoading(false);
     setOpen(true);
   };
 
   useEffect(() => {
-    console.log(getValues("role"));
-  }, [getValues("role")]);
+    if (date) {
+      setValue("date", date.toISOString().split("T")[0]);
+    } else {
+      setValue("date", "");
+    }
+  }, [date]);
 
   return (
     <div className="w-[100vw] h-[100v] flex relative">
@@ -116,7 +122,7 @@ export default function NourseMonitoring() {
                   <Label className="font-bold cursor-pointer" htmlFor="date">
                     Data Nascimento
                   </Label>
-                  <Input {...register("date")} id="date" type="date" required />
+                  <DatePicker onSelect={setDate} date={date} />
                   {errors.date && (
                     <span className="text-destructive font-semibold">
                       {errors.date.message}

@@ -14,6 +14,7 @@
     --primary-foreground: 355.7 100% 97.3%; /* #FFF4F6 */
     --secondary: 140 60% 64%; /* #66D66F */
     --secondary-foreground: 240 5.9% 10%; /* #18181B */
+    --tertiary: 212 58% 49%; /* #367EC2 */
     --muted: 240 4.8% 95.9%; /* #F1F1F5 */
     --muted-foreground: 240 3.8% 46.1%; /* #737380 */
     --accent: 240 4.8% 95.9%; /* #F1F1F5 */
@@ -42,6 +43,7 @@
     --primary-foreground: 144.9 80.4% 10%; /* #0E331C */
     --secondary: 140 60% 64%; /* #66D66F */
     --secondary-foreground: 0 0% 98%; /* #FAFAFA */
+    --tertiary: 212 58% 49%; /* #367EC2 */
     --muted: 0 0% 15%; /* #262626 */
     --muted-foreground: 240 5% 64.9%; /* #A1A1AA */
     --accent: 12 6.5% 15.1%; /* #2B2521 */
@@ -65,5 +67,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .border-tertiary {
+    border-color: hsl(212, 58%, 49%); /* #367EC2 */
   }
 }

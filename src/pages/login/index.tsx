@@ -14,7 +14,7 @@ const createUserFormSchema = z.object({
   username: z
     .string()
     .nonempty("Usuário é obrigatório.")
-    .regex(/^[A-Za-z]+$/i, "Somente letras"),
+    .regex(/^(?!\s*$)[A-Za-z\s]+$/i, "Somente letras"),
   password: z.string().nonempty("Senha é obrigatória."),
 });
 
@@ -36,7 +36,6 @@ export default function Login() {
 
   const onSubmit = (data: createUserFormData) => {
     setIsLoading(true);
-    console.log(data);
     setUserData(data);
     const userInfoJson = JSON.stringify(data);
     localStorage.setItem(clientStorageKey, userInfoJson);
