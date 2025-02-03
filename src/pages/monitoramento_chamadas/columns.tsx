@@ -10,6 +10,8 @@ export type CallsType = {
   criticality: "auxilio" | "emergencia";
   responsible: string;
   patient: string;
+  bed: string;
+  room: string;
 };
 
 export const columns: ColumnDef<CallsType>[] = [
@@ -33,6 +35,16 @@ export const columns: ColumnDef<CallsType>[] = [
     header: "Responsável",
     cell: ({ row }) =>
       row.original.responsible || <span>Responsável não enontrado.</span>,
+  },
+  {
+    accessorKey: "bed",
+    header: "Leito",
+    cell: ({ row }) => row.original.bed,
+  },
+  {
+    accessorKey: "room",
+    header: "Quarto",
+    cell: ({ row }) => row.original.room,
   },
   {
     accessorKey: "patient",

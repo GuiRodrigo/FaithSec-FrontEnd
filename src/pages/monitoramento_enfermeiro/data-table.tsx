@@ -13,16 +13,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter } from "next/router";
+import { NourseType } from "./columns";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<NourseType>[];
+  data: NourseType[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter();
   const table = useReactTable({
     data,
     columns,
@@ -54,7 +57,10 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                className="bg-muted"
+                onClick={() =>
+                  router.push(`monitoramento_enfermeiro/${row.original.nfc}`)
+                }
+                className="bg-muted cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
