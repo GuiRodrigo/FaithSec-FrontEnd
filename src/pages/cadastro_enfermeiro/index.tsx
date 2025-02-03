@@ -18,12 +18,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DatePicker } from "@/components/compounds/DatePicker";
+import api from "@/service/api";
 
 const createNourseFormSchema = z.object({
   name: z
     .string()
     .nonempty("Nome é obrigatório.")
-    .regex(/^[A-Za-z]+$/i, "Somente letras"),
+    .regex(/^(?!\s*$)[A-Za-z\s]+$/i, "Somente letras"),
   date: z.string().nonempty("Data é obrigatória."),
   phone: z
     .string()
@@ -64,8 +65,27 @@ export default function NourseRegister() {
 
   const onSubmit = (data: createNourseFormData) => {
     setIsLoading(true);
-    setIsLoading(false);
-    setOpen(true);
+    api.post("/enfermeiro", {
+      nfc: "NFC123456",
+      telefone1: "(11) 98765-4321",
+      telefone2: "(11) 91234-5678",
+      nome: "Maria Silva Santos",
+      senha: "senha123",
+      dataNasc: "1990-05-15",
+      cargo: "Enfermeira Sênior",
+      cpf: "123.456.789-00",
+      endereco: "Rua das Flores, 123 - Jardim Primavera, São Paulo - SP",
+      estadoCracha: "habilitado",
+      ala: "UTI"  // Este é o campo correto
+    }).then((res) => {
+      console.log(res);
+      setIsLoading(false);
+      setOpen(true);
+    }).catch((err) => {
+      console.log(err);
+      setIsLoading(false);
+    })
+
   };
 
   useEffect(() => {
