@@ -66,16 +66,16 @@ export default function NourseRegister() {
   const onSubmit = (data: createNourseFormData) => {
     setIsLoading(true);
     api.post("/enfermeiro", {
-      nfc: "NFC123456",
-      telefone1: "(11) 98765-4321",
-      telefone2: "(11) 91234-5678",
-      nome: "Maria Silva Santos",
-      senha: "senha123",
-      dataNasc: "1990-05-15",
-      cargo: "Enfermeira Sênior",
-      cpf: "123.456.789-00",
-      endereco: "Rua das Flores, 123 - Jardim Primavera, São Paulo - SP",
-      estadoCracha: "habilitado",
+      nfc: data.nfc,
+      telefone1: data.phone,
+      telefone2: data.phone,
+      nome: data.name,
+      senha: data.password,
+      dataNasc: data.date,
+      cargo: data.role,
+      cpf: data.cpf,
+      endereco: data.address,
+      estadoCracha: "desabilitado",
       ala: "UTI"  // Este é o campo correto
     }).then((res) => {
       console.log(res);
