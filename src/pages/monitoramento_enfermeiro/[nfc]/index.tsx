@@ -8,13 +8,13 @@ import { ChevronLeft, Filter, Router } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { NourseType, columns } from "./columns";
+import { NourseType, columns } from "../columns";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
-import { DataTable } from "./data-table";
 import { useRouter } from "next/router";
-import { CallsType } from "../monitoramento_chamadas/columns";
+import { CallsType } from "../../monitoramento_chamadas/columns";
+import { DataTable } from "@/components/ui/data-table";
 
 const createNourseFormSchema = z.object({
   name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
@@ -142,8 +142,8 @@ export default function NourseDetails() {
         <ChevronLeft /> Voltar
       </Button>
       <div className="min-h-[100vh] flex-col relative justify-center items-center bg-primary pt-20 ">
-        <div className="flex flex-col w-full px-28 mt-5 h-full border-b-2 border-foreground">
-          <div className="flex justify-around bg-muted p-6 w-full">
+        <div className="flex flex-col w-full px-28 mt-5 h-full">
+          <div className="flex justify-around bg-muted p-6 w-full  border-b-2 border-muted-foreground">
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">Profissional</span>
               <span>Guilherme Rodrigo Araújo Antero</span>
@@ -157,8 +157,8 @@ export default function NourseDetails() {
               <span>NFC-X</span>
             </div>
           </div>
-          <div>
-            <span className="font-bold">
+          <div className="flex justify-end w-full bg-muted px-4 py-2">
+            <span className="font-semibold">
               {callsMock.length} atendimento{callsMock.length > 1 ? "s" : ""}
             </span>
           </div>
