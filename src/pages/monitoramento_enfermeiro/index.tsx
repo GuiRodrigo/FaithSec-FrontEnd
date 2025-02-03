@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { NourseType, columns } from "./columns";
-import { DataTable } from "@/components/ui/data-table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
+import { DataTable } from "./data-table";
 
 const createNourseFormSchema = z.object({
   name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
@@ -136,7 +136,9 @@ export default function NourseMonitoring() {
           <div className="flex flex-col w-full px-28 mt-5 h-full">
             <form className="flex flex-col bg-muted p-6 w-full">
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
-                <Button variant={"link"}>Buscar</Button>
+                <Button type="submit" variant={"link"}>
+                  Buscar
+                </Button>
                 <Filter />
               </div>
               <div className="flex justify-around flex-1">
