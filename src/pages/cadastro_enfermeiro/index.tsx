@@ -70,7 +70,7 @@ export default function NourseRegister() {
   const onSubmit = (data: createNourseFormData) => {
     setIsLoading(true);
     api
-      .post("/cadastrar-enfermeiro", {
+      .post("/enfermeiro", {
         nfc: data.nfc,
         telefone1: data.phone,
         telefone2: data.phone,

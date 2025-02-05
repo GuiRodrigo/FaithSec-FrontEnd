@@ -45,11 +45,11 @@ export const columns: ColumnDef<CallsType>[] = [
       return (
         <Badge
           className={`${
-            criticidade != "emergencia" ? "bg-chart-4" : ""
+            criticidade != "Emergencia" ? "bg-chart-4" : ""
           } text-center self-center`}
-          variant={criticidade === "emergencia" ? "destructive" : "default"}
+          variant={criticidade === "Emergencia" ? "destructive" : "default"}
         >
-          {criticidade === "emergencia" ? "EMERGÊNCIA" : "AUXÍLIO"}
+          {criticidade === "Emergencia" ? "EMERGÊNCIA" : "AUXÍLIO"}
         </Badge>
       );
     },

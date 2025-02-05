@@ -19,7 +19,7 @@ export type CallsType = {
   idChamada: number;
   responsavel: string;
   data: string; // ou 'Date', dependendo de como você deseja manipular a data
-  criticidade: "auxilio" | "emergencia"; // Se for um conjunto fixo de valores
+  criticidade: "Auxilio" | "Emergencia"; // Se for um conjunto fixo de valores
   inicio: string; // ou 'Date', se for para armazenar como Data
   termino: string; // ou 'Date', se for para armazenar como Data
   cpf_paciente: string;
@@ -72,11 +72,11 @@ export const columns: ColumnDef<CallsType>[] = [
       return (
         <Badge
           className={`${
-            criticidade != "emergencia" ? "bg-chart-4" : ""
+            criticidade != "Emergencia" ? "bg-chart-4" : ""
           } text-center self-center`}
-          variant={criticidade === "emergencia" ? "destructive" : "default"}
+          variant={criticidade === "Emergencia" ? "destructive" : "default"}
         >
-          {criticidade === "emergencia" ? "EMERGÊNCIA" : "AUXÍLIO"}
+          {criticidade === "Emergencia" ? "EMERGÊNCIA" : "AUXÍLIO"}
         </Badge>
       );
     },

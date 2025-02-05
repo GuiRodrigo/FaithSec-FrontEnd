@@ -79,6 +79,7 @@ export default function CalledMonitoring() {
     api
       .post("/chamadas")
       .then((res) => {
+        console.log(res.data)
         const initCalss: CallsType[] = res.data;
         const sortedCalls = initCalss.sort((a, b) => {
           // Chamadas sem término (call_end undefined ou null) vêm primeiro
@@ -86,9 +87,9 @@ export default function CalledMonitoring() {
           if (a.termino && !b.termino) return 1;
 
           // Depois, ordenar por criticality (emergências primeiro)
-          if (a.criticidade === "emergencia" && b.criticidade === "auxilio")
+          if (a.criticidade === "Emergencia" && b.criticidade === "Auxilio")
             return -1;
-          if (a.criticidade === "auxilio" && b.criticidade === "emergencia")
+          if (a.criticidade === "Auxilio" && b.criticidade === "Emergencia")
             return 1;
 
           // Por fim, ordenar por call_start (do menor para o maior)
@@ -108,6 +109,8 @@ export default function CalledMonitoring() {
         //       )
         //     : "",
         // }));
+        console.log("sortedCalls")
+        console.log(sortedCalls)
 
         setCalls(sortedCalls);
       })
@@ -116,12 +119,12 @@ export default function CalledMonitoring() {
 
   // Função para contar chamadas de emergência
   const countEmergencies = (): number => {
-    return calls.filter((call) => call.criticidade === "emergencia").length;
+    return calls.filter((call) => call.criticidade === "Emergencia").length;
   };
 
   // Função para contar chamadas de auxílio
   const countAuxilio = (): number => {
-    return calls.filter((call) => call.criticidade === "auxilio").length;
+    return calls.filter((call) => call.criticidade === "Auxilio").length;
   };
 
   return (
@@ -168,8 +171,8 @@ export default function CalledMonitoring() {
                         <SelectValue placeholder="Selecione" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="auxilio">Auxílio</SelectItem>
-                        <SelectItem value="emergencia">Emergência</SelectItem>
+                        <SelectItem value="Auxilio">Auxílio</SelectItem>
+                        <SelectItem value="Emergencia">Emergência</SelectItem>
                       </SelectContent>
                     </Select>
                     {errors.date && (
