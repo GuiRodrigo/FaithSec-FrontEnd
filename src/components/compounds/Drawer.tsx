@@ -77,7 +77,7 @@ export function Drawer({ isExpanded = false }: { isExpanded?: boolean }) {
 
   return (
     <div
-      className={`flex z-50 flex-col relative transition-all duration-300 ease-in-out ${
+      className={`flex z-50 flex-col justify-between py-10 relative transition-all duration-300 ease-in-out ${
         expanded ? "w-[25vw]" : "w-[10vw]"
       } h-[100vh] items-center justify-center border-r-2 border-foreground`}
     >

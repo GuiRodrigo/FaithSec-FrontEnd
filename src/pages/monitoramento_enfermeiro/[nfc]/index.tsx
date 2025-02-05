@@ -8,13 +8,15 @@ import { ChevronLeft, Filter, Router } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { NourseType, columns } from "../columns";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
 import { useRouter } from "next/router";
 import { CallsType } from "../../monitoramento_chamadas/columns";
-import { DataTable } from "@/components/ui/data-table";
+import api from "@/service/api";
+import { DataTable } from "./data-table";
+import { NourseType } from "../columns";
+import { columns } from "./columns";
 
 const createNourseFormSchema = z.object({
   name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
@@ -27,11 +29,11 @@ const createNourseFormSchema = z.object({
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
 export default function NourseDetails() {
   const router = useRouter();
+  const { nfc } = router.query;
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState<string>("");
-  const [calls, setCalls] = useState<CallsType[]>([]);
+  const [nourse, setNourse] = useState<NourseType | undefined>(undefined);
+  const [calls, setCalls] = useState<CallsType[] | undefined>(undefined);
 
   const {
     register,
@@ -52,86 +54,33 @@ export default function NourseDetails() {
   };
 
   useEffect(() => {
-    if (date) {
-      setValue("date", date.toISOString().split("T")[0]);
-    } else {
-      setValue("date", "");
+    console.log(nfc);
+    if (nfc) {
+      api
+        .post(`/enfermeiro`, { nfc })
+        .then((res) => {
+          setNourse(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  }, [date]);
+  }, [nfc]);
 
   useEffect(() => {
-    if (time) {
-      setValue("time", time);
-    } else {
-      setValue("time", "");
-    }
-  }, [time]);
-
-  const callsMock: NourseType[] = [
-    {
-      nfc: "NFC-001",
-      professional: "João Silva",
-      role: "Enfermeiro",
-      services: "25",
-    },
-    {
-      nfc: "NFC-002",
-      professional: "Maria Souza",
-      role: "Técnica de Enfermagem",
-      services: "18",
-    },
-    {
-      nfc: "NFC-003",
-      professional: "Carlos Oliveira",
-      role: "Enfermeiro",
-      services: "30",
-    },
-    {
-      nfc: "NFC-004",
-      professional: "Ana Mendes",
-      role: "Técnica de Enfermagem",
-      services: "22",
-    },
-    {
-      nfc: "NFC-005",
-      professional: "Rafael Lima",
-      role: "Enfermeiro",
-      services: "27",
-    },
-    {
-      nfc: "NFC-006",
-      professional: "Gabriel Costa",
-      role: "Técnico de Enfermagem",
-      services: "15",
-    },
-    {
-      nfc: "NFC-007",
-      professional: "Beatriz Martins",
-      role: "Enfermeira",
-      services: "32",
-    },
-    {
-      nfc: "NFC-008",
-      professional: "Eduardo Rocha",
-      role: "Técnico de Enfermagem",
-      services: "19",
-    },
-    {
-      nfc: "NFC-009",
-      professional: "Larissa Ferreira",
-      role: "Enfermeira",
-      services: "24",
-    },
-    {
-      nfc: "NFC-010",
-      professional: "Thiago Nunes",
-      role: "Técnico de Enfermagem",
-      services: "20",
-    },
-  ];
+    api
+      .post(`/chamadas`, { nfc })
+      .then((res) => {
+        setCalls(res.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
-    <ScrollArea className="flex-1 h-[100vh]">
+    <div className="flex-1 bg-primary h-[100vh]">
       <Button
         onClick={() => {
           router.back();
@@ -141,32 +90,44 @@ export default function NourseDetails() {
       >
         <ChevronLeft /> Voltar
       </Button>
-      <div className="min-h-[100vh] flex-col relative justify-center items-center bg-primary pt-20 ">
+      <ScrollArea className="max-h-[90vh] flex-col relative justify-center items-center  pt-20 ">
         <div className="flex flex-col w-full px-28 mt-5 h-full">
           <div className="flex justify-around bg-muted p-6 w-full  border-b-2 border-muted-foreground">
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">Profissional</span>
-              <span>Guilherme Rodrigo Araújo Antero</span>
+              <span>{nourse ? nourse.nome : ""}</span>
             </div>
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">Cargo</span>
-              <span>Enfermeiro Chefe</span>
+              <span>{nourse ? nourse.cargo : ""}</span>
             </div>
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">NFC</span>
-              <span>NFC-X</span>
+              <span>{nourse ? nourse.nfc : ""}</span>
             </div>
           </div>
           <div className="flex justify-end w-full bg-muted px-4 py-2">
             <span className="font-semibold">
-              {callsMock.length} atendimento{callsMock.length > 1 ? "s" : ""}
+              {calls
+                ? `${calls.length} atendimento${calls.length > 1 ? "s" : ""}`
+                : null}
             </span>
           </div>
           <div className="py-5">
-            <DataTable columns={columns} data={callsMock} />
+            {calls ? <DataTable columns={columns} data={calls} /> : null}
           </div>
         </div>
+      </ScrollArea>
+      <div className="flex justify-center items-center">
+        <Button
+          onClick={() => {
+            router.push(`${nfc}/editar`);
+          }}
+          className="bg-secondary text-foreground font-semibold rounded-xl"
+        >
+          VER CADASTRO
+        </Button>
       </div>
-    </ScrollArea>
+    </div>
   );
 }

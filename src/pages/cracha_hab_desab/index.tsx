@@ -1,23 +1,31 @@
-import { CardProfile } from "@/components/compounds/CardProfile";
-import { DateTimePicker } from "@/components/compounds/DateTimePicker";
-import { Drawer } from "@/components/compounds/Drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { NourseType, columns } from "./columns";
+import { zodResolver } from "@hookform/resolvers/zod";
+import api from "@/service/api";
+import { Drawer } from "@/components/compounds/Drawer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Filter } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
+import { DateTimePicker } from "@/components/compounds/DateTimePicker";
+import { CardProfile } from "@/components/compounds/CardProfile";
+import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { columns, NourseType } from "./columns";
 import { DataTable } from "./data-table";
-import api from "@/service/api";
+import { useAuth } from "@/hooks/auth";
 
 const createNourseFormSchema = z.object({
   name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
-  date: z.string(),
+  estado: z.string(),
   time: z.string(),
   role: z.string(),
   nfc: z.string(),
@@ -25,11 +33,10 @@ const createNourseFormSchema = z.object({
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
 
-export default function NourseMonitoring() {
+export default function NourseBadge() {
+  const { alterTable, setAlterTable } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState<string>("");
   const [nourses, setNourses] = useState<NourseType[]>([]);
 
   const {
@@ -51,22 +58,6 @@ export default function NourseMonitoring() {
   };
 
   useEffect(() => {
-    if (date) {
-      setValue("date", date.toISOString().split("T")[0]);
-    } else {
-      setValue("date", "");
-    }
-  }, [date]);
-
-  useEffect(() => {
-    if (time) {
-      setValue("time", time);
-    } else {
-      setValue("time", "");
-    }
-  }, [time]);
-
-  useEffect(() => {
     api
       .get("/enfermeiros")
       .then((res) => {
@@ -77,7 +68,7 @@ export default function NourseMonitoring() {
         console.log(err);
         setNourses([]);
       });
-  }, []);
+  }, [alterTable]);
 
   return (
     <div className="w-[100vw] max-w-[100vw] h-[100v] flex relative">
@@ -110,23 +101,36 @@ export default function NourseMonitoring() {
                       onChange={(value) => setValue("role", value)}
                       value={getValues("role")}
                     />
-                    {errors.date && (
+                    {errors.role && (
                       <span className="text-destructive font-semibold">
-                        {errors.date.message}
+                        {errors.role.message}
                       </span>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="date">Data e Hora</Label>
-                    <DateTimePicker
-                      date={date}
-                      time={time}
-                      onSelectDate={setDate}
-                      onSelectTime={setTime}
-                    />
-                    {errors.date && (
+                    <Label htmlFor="date">Estado</Label>
+                    <Select
+                      onValueChange={(v) => {
+                        setValue("estado", v);
+                      }}
+                      value={getValues("estado")}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Selecione um estado" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem key={"1"} value={"habilitado"}>
+                          Habilitado
+                        </SelectItem>
+
+                        <SelectItem key={"2"} value={"desabilitado"}>
+                          Desabilitado
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.estado && (
                       <span className="text-destructive font-semibold">
-                        {errors.date.message}
+                        {errors.estado.message}
                       </span>
                     )}
                   </div>

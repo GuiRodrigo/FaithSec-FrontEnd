@@ -14,11 +14,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/router";
-import { CallsType } from "@/pages/monitoramento_chamadas/columns";
+import { NourseType } from "./columns";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<CallsType>[];
-  data: CallsType[];
+  columns: ColumnDef<NourseType>[];
+  data: NourseType[];
 }
 
 export function DataTable<TData, TValue>({
@@ -57,9 +57,6 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                onClick={
-                  () => {} // router.push(`monitoramento_enfermeiro/${row.original.nfc}`)
-                }
                 className="bg-muted cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}

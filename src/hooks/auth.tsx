@@ -16,6 +16,8 @@ interface AuthContextData {
   isLogged: boolean;
   setUserData: Dispatch<SetStateAction<UserData | undefined>>;
   userData: UserData | undefined;
+  alterTable: boolean;
+  setAlterTable: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface UserData {
@@ -29,6 +31,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [userData, setUserData] = useState<UserData | undefined>();
+  const [alterTable, setAlterTable] = useState(false);
   const isLogged = true;
 
   function retrieveLocalStorageInfo() {
@@ -54,6 +57,8 @@ function AuthProvider({ children }: AuthProviderProps) {
         isLogged,
         setUserData,
         userData,
+        alterTable,
+        setAlterTable,
       }}
     >
       {children}

@@ -1,24 +1,23 @@
-import { CardProfile } from "@/components/compounds/CardProfile";
-import { Drawer } from "@/components/compounds/Drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import InputMask from "react-input-mask";
-import { Button } from "@/components/ui/button";
-import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
+import { DatePicker } from "@/components/compounds/DatePicker";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { DatePicker } from "@/components/compounds/DatePicker";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import InputMask from "react-input-mask";
+
 import api from "@/service/api";
+import { z } from "zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/router";
 
 const createNourseFormSchema = z.object({
   name: z
@@ -51,7 +50,8 @@ const createNourseFormSchema = z.object({
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
 
-export default function NourseRegister() {
+export default function Edit() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
@@ -104,7 +104,15 @@ export default function NourseRegister() {
 
   return (
     <div className="w-[100vw] h-[100v] flex relative">
-      <Drawer />
+      <Button
+        onClick={() => {
+          router.back();
+        }}
+        variant={"ghost"}
+        className="absolute top-5 left-5 z-10"
+      >
+        <ChevronLeft /> Voltar
+      </Button>
       <Dialog open={open}>
         <DialogContent
           className="w-[20vw] h-[15vw] bg-primary border-foreground"
@@ -307,7 +315,6 @@ export default function NourseRegister() {
           </form>
         </div>
       </div>
-      <CardProfile />
     </div>
   );
 }

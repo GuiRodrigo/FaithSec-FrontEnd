@@ -1,12 +1,14 @@
+import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type NourseType = {
   nfc: string;
-  professional: string;
-  role: string;
-  services: string;
+  nome: string;
+  cargo: string;
+  ala: string;
+  estadoCracha: string;
 };
 
 export const columns: ColumnDef<NourseType>[] = [
@@ -16,18 +18,18 @@ export const columns: ColumnDef<NourseType>[] = [
     cell: ({ row }) => row.original.nfc,
   },
   {
-    accessorKey: "professional",
+    accessorKey: "nome",
     header: "Profissional",
-    cell: ({ row }) => row.original.professional,
+    cell: ({ row }) => row.original.nome,
   },
   {
-    accessorKey: "role",
+    accessorKey: "ala",
+    header: "Ala",
+    cell: ({ row }) => row.original.ala,
+  },
+  {
+    accessorKey: "cargo",
     header: "Cargo",
-    cell: ({ row }) => row.original.role,
-  },
-  {
-    accessorKey: "services",
-    header: "Atendimentos",
-    cell: ({ row }) => row.original.services,
+    cell: ({ row }) => row.original.cargo,
   },
 ];
