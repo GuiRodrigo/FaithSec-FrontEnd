@@ -3,7 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 
-export default function App() {
+export default function System() {
   const router = useRouter();
 
   return (
@@ -21,7 +21,7 @@ export default function App() {
         {/* Título no topo */}
         <div className="p-5 w-[50vw] flex justify-center items-center bg-muted border border-foreground">
           <span className="text-center text-3xl font-semibold">
-            APLICATIVO FAITHSEC - ENFERMEIRO E ADMINISTRATIVO
+            SISTEMA DE CHAMADA DE EMERGÊNCIA
           </span>
         </div>
 
