@@ -7,52 +7,32 @@ export default function System() {
   const router = useRouter();
 
   return (
-    <div className="flex-1 bg-primary justify-center flex w-screen h-screen relative">
+    <div className="relative p-5 min-h-screen" style={{ backgroundColor: "#28A45E" }}>
       {/* Botão Voltar */}
-      <Button
-        onClick={() => router.back()}
-        variant="ghost"
-        className="absolute top-5 left-5 z-10"
-      >
-        <ChevronLeft /> Voltar
+      <Button onClick={() => router.back()} variant="ghost" className="absolute top-5 left-5 z-10">
+        <ChevronLeft className="mr-2" /> Voltar
       </Button>
 
-      <ScrollArea className="h-screen flex flex-col items-center pt-20">
-        {/* Título no topo */}
-        <div className="p-5 w-[50vw] flex justify-center items-center bg-muted border border-foreground">
-          <span className="text-center text-3xl font-semibold">
-            SISTEMA DE CHAMADA DE EMERGÊNCIA
-          </span>
-        </div>
+      {/* Título no topo */}
+      <h1 className="text-2xl font-bold text-center mt-10">APLICATIVO FAITHSEC - ENFERMEIRO E ADMINISTRATIVO</h1>
 
-        {/* Bloco de texto formatado */}
-        <div className="p-5 w-[50vw] bg-muted border border-foreground mt-5">
-          <div className="space-y-2">
-            {/* Linha 1: duas colunas */}
-            <div className="flex justify-between">
-              <span>titulo texto</span>
-              <span>titulo texto</span>
-            </div>
-            {/* Linha 2: duas colunas */}
-            <div className="flex justify-between">
-              <span>titulo texto</span>
-              <span>titulo texto</span>
-            </div>
-            {/* Linha 3: duas colunas */}
-            <div className="flex justify-between">
-              <span>titulo texto</span>
-              <span>titulo texto</span>
-            </div>
-            {/* Linha 4: texto único centralizado */}
-            <div className="flex justify-center">
-              <span>titulo texto</span>
-            </div>
-            {/* Linha 5: texto único centralizado */}
-            <div className="flex justify-center">
-              <span>titulo texto</span>
-            </div>
-          </div>
-        </div>
+      {/* Bloco de texto formatado */}
+      <ScrollArea className="mt-5 p-4 border rounded-lg bg-gray-100">
+        <h2 className="text-xl font-semibold">CADASTRO DOS ENFERMEIROS</h2>
+        <p>Um enfermeiro deve ser cadastrado no sistema para ter acesso à estrutura completa, incluindo o celular no posto de enfermagem e os crachás com identificador único.</p>
+        <p>Antes de cadastrar um profissional, é necessário definir o identificador único, que será o número do celular fornecido pela FaithSec. Após obter esse número, finalize o cadastro normalmente. Não é necessário informar o número de cadastro ao profissional. O acesso ao sistema será realizado utilizando o CPF como usuário e a senha definida no momento do cadastro.</p>
+
+        <h2 className="text-xl font-semibold mt-4">MONITORAMENTO DE CHAMADAS</h2>
+        <p>O monitoramento das chamadas se baseia nos atendimentos dos enfermeiros e inclui: o dia, o início da chamada, o término, quem atendeu, qual a criticidade e o ID único da chamada.</p>
+
+        <h2 className="text-xl font-semibold mt-4">MONITORAMENTO DE ENFERMEIROS</h2>
+        <p>O monitoramento dos enfermeiros tem como objetivo registrar e acompanhar a quantidade de atendimentos realizados por cada profissional, permitindo uma análise precisa de sua performance e distribuição de tarefas.</p>
+
+        <h2 className="text-xl font-semibold mt-4">CRACHÁ HABILITADO/DESABILITADO</h2>
+        <p>Parte essencial e sensível do projeto: quando houver troca de turno e um profissional não estiver na instituição, seu acesso deve ser desabilitado. Isso inclui a finalização das chamadas com o crachá NFC e o acesso aos celulares com prontuário.</p>
+
+        <h2 className="text-xl font-semibold mt-4">CONFIGURAÇÃO</h2>
+        <p>Para facilitar o acesso à plataforma da FAITHSEC e garantir conformidade com os termos assinados ao adquirir o sistema, são oferecidas opções para alteração de senha e ajustes adicionais, otimizando o desempenho do sistema.</p>
       </ScrollArea>
     </div>
   );

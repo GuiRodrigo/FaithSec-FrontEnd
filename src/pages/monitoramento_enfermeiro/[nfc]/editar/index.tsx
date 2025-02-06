@@ -170,7 +170,7 @@ export default function Edit() {
         <div className="border-2 border-foreground flex w-[65vw] h-[75vh] flex-col pt-2 z-10">
           <div className="flex justify-center items-center w-full">
             <span className="bg-primary-foreground px-14 py-3 font-bold">
-              CADASTRO ENFERMEIRO(A)
+              EDITAR CADASTRO DO ENFERMEIRO(A)
             </span>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
