@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 
 type Props = {
   date: Date | undefined;
-  time: string;
+  time?: string;
   onSelectDate: (date: Date | undefined) => void;
   onSelectTime: (time: string) => void;
 };
@@ -60,13 +60,14 @@ export function DateTimePicker({
       </Popover>
 
       {/* Time Picker */}
+      {time?
       <div className="flex items-center gap-2">
         <Input
           type="time"
           value={time}
           onChange={(e) => onSelectTime(e.target.value)}
         />
-      </div>
+      </div>: null}
     </div>
   );
 }

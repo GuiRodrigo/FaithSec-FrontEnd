@@ -33,6 +33,11 @@ export const columns: ColumnDef<CallsType>[] = [
     cell: ({ row }) => row.original.idChamada,
   },
   {
+    accessorKey: "data",
+    header: "Data",
+    cell: ({ row }) => row.original.data,
+  },
+  {
     accessorKey: "inicio",
     header: "Inicio da Chamada",
     cell: ({ row }) => row.original.inicio,

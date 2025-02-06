@@ -18,14 +18,15 @@ import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/router";
+import { NourseType } from "../../columns";
 
 const createNourseFormSchema = z.object({
-  name: z
+  nome: z
     .string()
     .nonempty("Nome é obrigatório.")
     .regex(/^(?!\s*$)[A-Za-z\s]+$/i, "Somente letras"),
-  date: z.string().nonempty("Data é obrigatória."),
-  phone: z
+  dataNasc: z.string().nonempty("Data é obrigatória."),
+  telefone1: z
     .string()
     .min(15, "Telefone inválido") // Garante que todos os dígitos foram preenchidos
     .regex(/^\(\d{2}\) \d{5}-\d{4}$/, "Formato inválido")
@@ -55,6 +56,10 @@ export default function Edit() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
+  const [nourse, setNourse] = useState<NourseType | undefined>(undefined);
+
+
+  const { nfc } = router.query;
 
   const {
     register,
@@ -67,16 +72,45 @@ export default function Edit() {
     resolver: zodResolver(createNourseFormSchema),
   });
 
+  useEffect(() => {
+    console.log(nfc);
+    if (nfc) {
+      api
+        .post(`/enfermeiros/buscar`, { nfc })
+        .then((res) => {
+          console.log(res)
+          setNourse(res.data[0]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [nfc]);
+
+  useEffect(() => {
+    if (nourse) {
+      setValue("address", nourse?.endereco)
+      setValue("nome", nourse?.endereco)
+      setValue("cpf", nourse?.cpf)
+      setValue("nfc", nourse?.nfc)
+      setValue("telefone1", nourse?.telefone1)
+      setValue("role", nourse?.cargo)
+      setValue("phoneSecondary", nourse?.telefone2)
+      setValue("password", nourse?.senha)
+      
+    }
+  }, [nourse])
+
   const onSubmit = (data: createNourseFormData) => {
     setIsLoading(true);
     api
       .post("/cadastrar-enfermeiro", {
         nfc: data.nfc,
-        telefone1: data.phone,
-        telefone2: data.phone,
-        nome: data.name,
+        telefone1: data.telefone1,
+        telefone2: data.telefone1,
+        nome: data.nome,
         senha: data.password,
-        dataNasc: data.date,
+        dataNasc: data.dataNasc,
         cargo: data.role,
         cpf: data.cpf,
         endereco: data.address,
@@ -96,9 +130,9 @@ export default function Edit() {
 
   useEffect(() => {
     if (date) {
-      setValue("date", date.toISOString().split("T")[0]);
+      setValue("dataNasc", date.toISOString().split("T")[0]);
     } else {
-      setValue("date", "");
+      setValue("dataNasc", "");
     }
   }, [date]);
 
@@ -142,44 +176,44 @@ export default function Edit() {
             <div className="flex px-5 py-3 flex-1">
               <div className="flex flex-col  px-20 gap-5 w-1/2 min-h-full">
                 <div className="flex flex-col gap-1">
-                  <Label className="font-bold cursor-pointer" htmlFor="name">
+                  <Label className="font-bold cursor-pointer" htmlFor="nome">
                     Nome Completo
                   </Label>
-                  <Input {...register("name")} id="name" type="text" required />
-                  {errors.name && (
+                  <Input {...register("nome")} id="nome" type="text" required />
+                  {errors.nome && (
                     <span className="text-destructive font-semibold">
-                      {errors.name.message}
+                      {errors.nome.message}
                     </span>
                   )}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label className="font-bold cursor-pointer" htmlFor="date">
+                  <Label className="font-bold cursor-pointer" htmlFor="dataNasc">
                     Data Nascimento
                   </Label>
                   <DatePicker onSelect={setDate} date={date} />
-                  {errors.date && (
+                  {errors.dataNasc && (
                     <span className="text-destructive font-semibold">
-                      {errors.date.message}
+                      {errors.dataNasc.message}
                     </span>
                   )}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <Label className="font-bold cursor-pointer" htmlFor="phone">
+                  <Label className="font-bold cursor-pointer" htmlFor="telefone1">
                     Telefone
                   </Label>
                   <InputMask
                     mask="(99) 99999-9999"
                     placeholder="(00) 00000-0000"
-                    {...register("phone")}
+                    {...register("telefone1")}
                   >
                     {(inputProps) => (
-                      <Input {...inputProps} id="phone" type="text" required />
+                      <Input {...inputProps} id="telefone1" type="text" required />
                     )}
                   </InputMask>
-                  {errors.phone && (
+                  {errors.telefone1 && (
                     <span className="text-destructive font-semibold">
-                      {errors.phone.message}
+                      {errors.telefone1.message}
                     </span>
                   )}
                 </div>

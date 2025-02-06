@@ -57,9 +57,10 @@ export default function NourseDetails() {
     console.log(nfc);
     if (nfc) {
       api
-        .post(`/enfermeiro`, { nfc })
+        .post(`/enfermeiros/buscar`, { nfc })
         .then((res) => {
-          setNourse(res.data);
+          console.log(res)
+          setNourse(res.data[0]);
         })
         .catch((err) => {
           console.log(err);
@@ -95,15 +96,15 @@ export default function NourseDetails() {
           <div className="flex justify-around bg-muted p-6 w-full  border-b-2 border-muted-foreground">
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">Profissional</span>
-              <span>{nourse ? nourse.nome : ""}</span>
+              <span>{nourse ? nourse.nome : "Não encontrado"}</span>
             </div>
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">Cargo</span>
-              <span>{nourse ? nourse.cargo : ""}</span>
+              <span>{nourse ? nourse.cargo : "Não encontrado"}</span>
             </div>
             <div className="flex flex-col justify-center items-center gap-2 w-1/3">
               <span className="font-semibold">NFC</span>
-              <span>{nourse ? nourse.nfc : ""}</span>
+              <span>{nourse ? nourse.nfc : "Não encontrado"}</span>
             </div>
           </div>
           <div className="flex justify-end w-full bg-muted px-4 py-2">

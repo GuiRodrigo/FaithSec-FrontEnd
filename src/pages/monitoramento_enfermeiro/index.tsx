@@ -14,13 +14,13 @@ import { Button } from "@/components/ui/button";
 import NurseRoleSelect from "@/components/compounds/NurseRoleSelect";
 import { DataTable } from "./data-table";
 import api from "@/service/api";
+import NurseAlaSelect from "@/components/compounds/NurseAlaSelect";
 
 const createNourseFormSchema = z.object({
-  name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
-  date: z.string(),
-  time: z.string(),
-  role: z.string(),
-  nfc: z.string(),
+  nome: z.string().optional(),
+  ala: z.string().optional(),
+  cargo: z.string().optional(),
+  nfc: z.string().optional(),
 });
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
@@ -43,28 +43,30 @@ export default function NourseMonitoring() {
     resolver: zodResolver(createNourseFormSchema),
   });
 
-  const onSubmit = (data: createNourseFormData) => {
+  const onSubmit = async (data: createNourseFormData) => {
+    // Verifica se pelo menos um campo foi preenchido
+    const hasAnyValue = Object.values(data).some(value =>
+      value !== undefined && value !== null && value !== ''
+    );
+
+    if (!hasAnyValue) {
+      alert("Preencha pelo menos um campo para realizar a busca");
+      return;
+    }
+
     setIsLoading(true);
-    console.log(data);
-    setIsLoading(false);
-    setOpen(true);
+    try {
+      const response = await api.post('/enfermeiros/buscar', data);
+      setNourses(response.data);
+    } catch (error: any) {
+      console.error('Erro ao buscar enfermeiros:', error);
+      alert(error.response?.data?.details || error.response?.data?.error || "Erro ao buscar enfermeiros. Tente novamente.");
+      setNourses([]); // Limpa a lista em caso de erro
+    } finally {
+      setIsLoading(false);
+      setOpen(true);
+    }
   };
-
-  useEffect(() => {
-    if (date) {
-      setValue("date", date.toISOString().split("T")[0]);
-    } else {
-      setValue("date", "");
-    }
-  }, [date]);
-
-  useEffect(() => {
-    if (time) {
-      setValue("time", time);
-    } else {
-      setValue("time", "");
-    }
-  }, [time]);
 
   useEffect(() => {
     api
@@ -85,18 +87,18 @@ export default function NourseMonitoring() {
       <ScrollArea className="flex-1 h-[100vh]">
         <div className="min-h-[100vh] flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
-            <form className="flex flex-col bg-muted p-6 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-muted p-6 w-full">
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
-                <Button type="submit" variant={"link"}>
-                  Buscar
+                <Button type="submit" variant={"link"} disabled={isLoading}>
+                  {isLoading ? "Buscando..." : "Buscar"}
                 </Button>
                 <Filter />
               </div>
               <div className="flex justify-around flex-1">
                 <div className="flex flex-col gap-2 w-1/3">
                   <div>
-                    <Label htmlFor="name">Profissional</Label>
-                    <Input {...register("name")} id="name" type="text" />
+                    <Label htmlFor="nome">Profissional</Label>
+                    <Input {...register("nome")} id="nome" type="text" />
                   </div>
                   <div>
                     <Label htmlFor="nfc">NFC</Label>
@@ -107,26 +109,24 @@ export default function NourseMonitoring() {
                   <div>
                     <Label htmlFor="criticality">Cargo</Label>
                     <NurseRoleSelect
-                      onChange={(value) => setValue("role", value)}
-                      value={getValues("role")}
+                      onChange={(value) => setValue("cargo", value)}
+                      value={getValues("cargo")}
                     />
-                    {errors.date && (
+                    {errors.cargo && (
                       <span className="text-destructive font-semibold">
-                        {errors.date.message}
+                        {errors.cargo.message}
                       </span>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="date">Data e Hora</Label>
-                    <DateTimePicker
-                      date={date}
-                      time={time}
-                      onSelectDate={setDate}
-                      onSelectTime={setTime}
+                    <Label htmlFor="ala">Ala</Label>
+                    <NurseAlaSelect
+                      onChange={(value) => setValue("ala", value)}
+                      value={getValues("ala")}
                     />
-                    {errors.date && (
+                    {errors.ala && (
                       <span className="text-destructive font-semibold">
-                        {errors.date.message}
+                        {errors.ala.message}
                       </span>
                     )}
                   </div>

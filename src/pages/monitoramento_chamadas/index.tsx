@@ -23,11 +23,11 @@ import { Button } from "@/components/ui/button";
 import api from "@/service/api";
 
 const createNourseFormSchema = z.object({
-  name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
-  date: z.string(),
-  time: z.string(),
-  criticality: z.string(),
-  id_call: z.string(),
+  responsavel: z.string().optional(),
+  data: z.string().optional(),
+  time: z.string().optional(),
+  criticidade: z.string().optional(),
+  idChamada: z.string().optional(),
 });
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
@@ -50,18 +50,54 @@ export default function CalledMonitoring() {
     resolver: zodResolver(createNourseFormSchema),
   });
 
-  const onSubmit = (data: createNourseFormData) => {
+  const onSubmit = async (data: createNourseFormData) => {
+    // Verifica se pelo menos um campo foi preenchido
+    const hasAnyValue = Object.values(data).some(value =>
+      value !== undefined && value !== null && value !== ''
+    );
+
+    if (!hasAnyValue) {
+      // Você pode usar aqui o componente de toast da sua aplicação se tiver um
+      alert("Preencha pelo menos um campo para realizar a busca");
+      return;
+    }
+
     setIsLoading(true);
-    console.log(data);
-    setIsLoading(false);
-    setOpen(true);
+    console.log(data)
+    try {
+      const response = await api.post('/chamadas', data);
+
+      const sortedCalls = response.data.sort((a: CallsType, b: CallsType) => {
+        // Chamadas sem término (call_end undefined ou null) vêm primeiro
+        if (!a.termino && b.termino) return -1;
+        if (a.termino && !b.termino) return 1;
+
+        // Depois, ordenar por criticidade (emergências primeiro)
+        if (a.criticidade === "Emergencia" && b.criticidade === "Auxilio")
+          return -1;
+        if (a.criticidade === "Auxilio" && b.criticidade === "Emergencia")
+          return 1;
+
+        // Por fim, ordenar por call_start (do menor para o maior)
+        return Number(a.inicio) - Number(b.inicio);
+      });
+
+      setCalls(sortedCalls);
+    } catch (error) {
+      console.error('Erro ao buscar chamadas:', error);
+      // Você pode usar aqui o componente de toast da sua aplicação se tiver um
+      alert("Erro ao buscar chamadas. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+      setOpen(true);
+    }
   };
 
   useEffect(() => {
     if (date) {
-      setValue("date", date.toISOString().split("T")[0]);
+      setValue("data", date.toISOString().split("T")[0]);
     } else {
-      setValue("date", "");
+      setValue("data", "");
     }
   }, [date]);
 
@@ -73,7 +109,7 @@ export default function CalledMonitoring() {
     }
   }, [time]);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   useEffect(() => {
     api
@@ -86,7 +122,7 @@ export default function CalledMonitoring() {
           if (!a.termino && b.termino) return -1;
           if (a.termino && !b.termino) return 1;
 
-          // Depois, ordenar por criticality (emergências primeiro)
+          // Depois, ordenar por criticidade (emergências primeiro)
           if (a.criticidade === "Emergencia" && b.criticidade === "Auxilio")
             return -1;
           if (a.criticidade === "Auxilio" && b.criticidade === "Emergencia")
@@ -133,39 +169,41 @@ export default function CalledMonitoring() {
       <ScrollArea className="flex-1 h-[100vh]">
         <div className="w-full min-h-[100vh] flex flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
-            <form className="flex flex-col bg-muted p-6 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-muted p-6 w-full">
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
-                <Button variant={"link"}>Buscar</Button>
+                <Button type="submit" variant={"link"} disabled={isLoading}>
+                  {isLoading ? "Buscando..." : "Buscar"}
+                </Button>
                 <Filter />
               </div>
               <div className="flex justify-around flex-1">
                 <div className="flex flex-col gap-2 w-1/3 ">
                   <div>
-                    <Label htmlFor="date">Data e Hora</Label>
+                    <Label htmlFor="data">Data e Hora</Label>
                     <DateTimePicker
                       date={date}
                       time={time}
                       onSelectDate={setDate}
                       onSelectTime={setTime}
                     />
-                    {errors.date && (
+                    {errors.data && (
                       <span className="text-destructive font-semibold">
-                        {errors.date.message}
+                        {errors.data.message}
                       </span>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="name">Responsável</Label>
-                    <Input {...register("name")} id="name" type="text" />
+                    <Label htmlFor="responsavel">Responsável</Label>
+                    <Input {...register("responsavel")} id="responsavel" type="text" />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 w-1/3">
                   <div>
-                    <Label htmlFor="criticality">Criticidade</Label>
+                    <Label htmlFor="criticidade">Criticidade</Label>
                     <Select
-                      value={getValues("criticality")}
-                      onValueChange={(v) => setValue("criticality", v)}
-                      form="criticality"
+                      value={getValues("criticidade")}
+                      onValueChange={(v) => setValue("criticidade", v)}
+                      form="criticidade"
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Selecione" />
@@ -175,15 +213,15 @@ export default function CalledMonitoring() {
                         <SelectItem value="Emergencia">Emergência</SelectItem>
                       </SelectContent>
                     </Select>
-                    {errors.date && (
+                    {errors.criticidade && (
                       <span className="text-destructive font-semibold">
-                        {errors.date.message}
+                        {errors.criticidade.message}
                       </span>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="id_call">ID da chamada</Label>
-                    <Input {...register("id_call")} id="id_call" type="text" />
+                    <Label htmlFor="idChamada">ID da chamada</Label>
+                    <Input {...register("idChamada")} id="idChamada" type="text" />
                   </div>
                 </div>
               </div>

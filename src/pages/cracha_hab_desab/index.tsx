@@ -24,11 +24,10 @@ import { DataTable } from "./data-table";
 import { useAuth } from "@/hooks/auth";
 
 const createNourseFormSchema = z.object({
-  name: z.string().regex(/^[A-Za-z]+$/i, "Somente letras"),
-  estado: z.string(),
-  time: z.string(),
-  role: z.string(),
-  nfc: z.string(),
+  nome: z.string().optional(),
+  estadoCracha: z.string().optional(),
+  cargo: z.string().optional(),
+  nfc: z.string().optional(),
 });
 
 type createNourseFormData = z.infer<typeof createNourseFormSchema>;
@@ -50,11 +49,30 @@ export default function NourseBadge() {
     resolver: zodResolver(createNourseFormSchema),
   });
 
-  const onSubmit = (data: createNourseFormData) => {
+
+  const onSubmit = async (data: createNourseFormData) => {
+    // Verifica se pelo menos um campo foi preenchido
+    const hasAnyValue = Object.values(data).some(value =>
+      value !== undefined && value !== null && value !== ''
+    );
+
+    if (!hasAnyValue) {
+      alert("Preencha pelo menos um campo para realizar a busca");
+      return;
+    }
+
     setIsLoading(true);
-    console.log(data);
-    setIsLoading(false);
-    setOpen(true);
+    try {
+      const response = await api.post('/enfermeiros/buscar', data);
+      setNourses(response.data);
+    } catch (error: any) {
+      console.error('Erro ao buscar enfermeiros:', error);
+      alert(error.response?.data?.details || error.response?.data?.error || "Erro ao buscar enfermeiros. Tente novamente.");
+      setNourses([]); // Limpa a lista em caso de erro
+    } finally {
+      setIsLoading(false);
+      setOpen(true);
+    }
   };
 
   useEffect(() => {
@@ -76,7 +94,7 @@ export default function NourseBadge() {
       <ScrollArea className="flex-1 h-[100vh]">
         <div className="min-h-[100vh] flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
-            <form className="flex flex-col bg-muted p-6 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-muted p-6 w-full">
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
                 <Button type="submit" variant={"link"}>
                   Buscar
@@ -86,8 +104,8 @@ export default function NourseBadge() {
               <div className="flex justify-around flex-1">
                 <div className="flex flex-col gap-2 w-1/3">
                   <div>
-                    <Label htmlFor="name">Profissional</Label>
-                    <Input {...register("name")} id="name" type="text" />
+                    <Label htmlFor="nome">Profissional</Label>
+                    <Input {...register("nome")} id="nome" type="text" />
                   </div>
                   <div>
                     <Label htmlFor="nfc">NFC</Label>
@@ -98,12 +116,12 @@ export default function NourseBadge() {
                   <div>
                     <Label htmlFor="criticality">Cargo</Label>
                     <NurseRoleSelect
-                      onChange={(value) => setValue("role", value)}
-                      value={getValues("role")}
+                      onChange={(value) => setValue("cargo", value)}
+                      value={getValues("cargo")}
                     />
-                    {errors.role && (
+                    {errors.cargo && (
                       <span className="text-destructive font-semibold">
-                        {errors.role.message}
+                        {errors.cargo.message}
                       </span>
                     )}
                   </div>
@@ -111,9 +129,9 @@ export default function NourseBadge() {
                     <Label htmlFor="date">Estado</Label>
                     <Select
                       onValueChange={(v) => {
-                        setValue("estado", v);
+                        setValue("estadoCracha", v);
                       }}
-                      value={getValues("estado")}
+                      value={getValues("estadoCracha")}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecione um estado" />
@@ -128,9 +146,9 @@ export default function NourseBadge() {
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    {errors.estado && (
+                    {errors.estadoCracha && (
                       <span className="text-destructive font-semibold">
-                        {errors.estado.message}
+                        {errors.estadoCracha.message}
                       </span>
                     )}
                   </div>

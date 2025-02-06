@@ -5,11 +5,18 @@ import { ColumnDef } from "@tanstack/react-table";
 // You can use a Zod schema here if you want.
 export type NourseType = {
   nfc: string;
+  telefone1: string;
+  telefone2: string;
+  qtdAtend: number;
   nome: string;
+  dataNasc: string;
   cargo: string;
-  ala: string;
-  estadoCracha: string;
-};
+  cpf: string;
+  endereco: string;
+  senha: string;
+  estadoCracha: 'habilitado' | 'desabilitado';
+  ala: 'UTI' | 'Internação Geral' | 'nenhum';
+}
 
 export const columns: ColumnDef<NourseType>[] = [
   {
