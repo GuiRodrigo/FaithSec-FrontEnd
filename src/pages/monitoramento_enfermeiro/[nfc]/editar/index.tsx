@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/router";
 import { NourseType } from "../../columns";
+import NurseAlaSelect from "@/components/compounds/NurseAlaSelect";
 
 const createNourseFormSchema = z.object({
   nome: z
@@ -31,7 +32,7 @@ const createNourseFormSchema = z.object({
     .min(15, "Telefone inválido") // Garante que todos os dígitos foram preenchidos
     .regex(/^\(\d{2}\) \d{5}-\d{4}$/, "Formato inválido")
     .nonempty("Telefone é obrigatória."),
-  email: z.string().nonempty("Email é obrigatória."),
+  ala: z.string().nonempty("Ala é obrigatória."),
   role: z
     .string({ required_error: "Selecione um cargo!" })
     .nonempty("Cargo é obrigatória."),
@@ -58,7 +59,6 @@ export default function Edit() {
   const [date, setDate] = useState<Date | undefined>();
   const [nourse, setNourse] = useState<NourseType | undefined>(undefined);
 
-
   const { nfc } = router.query;
 
   const {
@@ -78,7 +78,7 @@ export default function Edit() {
       api
         .post(`/enfermeiros/buscar`, { nfc })
         .then((res) => {
-          console.log(res)
+          console.log(res);
           setNourse(res.data[0]);
         })
         .catch((err) => {
@@ -89,33 +89,33 @@ export default function Edit() {
 
   useEffect(() => {
     if (nourse) {
-      setValue("address", nourse?.endereco)
-      setValue("nome", nourse?.endereco)
-      setValue("cpf", nourse?.cpf)
-      setValue("nfc", nourse?.nfc)
-      setValue("telefone1", nourse?.telefone1)
-      setValue("role", nourse?.cargo)
-      setValue("phoneSecondary", nourse?.telefone2)
-      setValue("password", nourse?.senha)
-      
+      setValue("address", nourse?.endereco);
+      setValue("nome", nourse?.nome);
+      setValue("cpf", nourse?.cpf);
+      setValue("nfc", nourse?.nfc);
+      setValue("telefone1", nourse?.telefone1);
+      setValue("role", nourse?.cargo);
+      setValue("phoneSecondary", nourse?.telefone2);
+      setValue("password", nourse?.senha);
+      setValue("dataNasc", nourse?.dataNasc);
+      setValue("ala", nourse?.ala);
     }
-  }, [nourse])
+  }, [nourse]);
 
   const onSubmit = (data: createNourseFormData) => {
     setIsLoading(true);
     api
-      .post("/cadastrar-enfermeiro", {
+      .post("/enfermeiro/atualizar", {
         nfc: data.nfc,
         telefone1: data.telefone1,
-        telefone2: data.telefone1,
+        telefone2: data.phoneSecondary,
         nome: data.nome,
         senha: data.password,
         dataNasc: data.dataNasc,
         cargo: data.role,
         cpf: data.cpf,
         endereco: data.address,
-        estadoCracha: "desabilitado",
-        ala: "UTI", // Este é o campo correto
+        ala: data.ala,
       })
       .then((res) => {
         console.log(res);
@@ -152,13 +152,14 @@ export default function Edit() {
           className="w-[20vw] h-[15vw] bg-primary border-foreground"
           onClick={() => {
             setOpen(false);
+            router.back();
           }}
         >
           <DialogHeader className="flex flex-col justify-center items-center relative p-5">
             <div className="opacity-20 absolute h-full rounded-2xl w-full bg-primary-foreground"></div>
             <div className="flex flex-col justify-center items-center relative p-5">
               <DialogTitle className="text-center">
-                Cadastro enviado com sucesso!
+                Cadastro atualizado com sucesso!
               </DialogTitle>
             </div>
           </DialogHeader>
@@ -187,10 +188,18 @@ export default function Edit() {
                   )}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label className="font-bold cursor-pointer" htmlFor="dataNasc">
+                  <Label
+                    className="font-bold cursor-pointer"
+                    htmlFor="dataNasc"
+                  >
                     Data Nascimento
                   </Label>
-                  <DatePicker onSelect={setDate} date={date} />
+                  <Input
+                    {...register("dataNasc")}
+                    id="dataNasc"
+                    type="date"
+                    required
+                  />
                   {errors.dataNasc && (
                     <span className="text-destructive font-semibold">
                       {errors.dataNasc.message}
@@ -199,7 +208,10 @@ export default function Edit() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <Label className="font-bold cursor-pointer" htmlFor="telefone1">
+                  <Label
+                    className="font-bold cursor-pointer"
+                    htmlFor="telefone1"
+                  >
                     Telefone
                   </Label>
                   <InputMask
@@ -208,7 +220,12 @@ export default function Edit() {
                     {...register("telefone1")}
                   >
                     {(inputProps) => (
-                      <Input {...inputProps} id="telefone1" type="text" required />
+                      <Input
+                        {...inputProps}
+                        id="telefone1"
+                        type="text"
+                        required
+                      />
                     )}
                   </InputMask>
                   {errors.telefone1 && (
@@ -219,17 +236,15 @@ export default function Edit() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label className="font-bold cursor-pointer" htmlFor="email">
-                    Email
+                    Ala
                   </Label>
-                  <Input
-                    {...register("email")}
-                    id="email"
-                    type="email"
-                    required
+                  <NurseAlaSelect
+                    onChange={(value) => setValue("ala", value)}
+                    value={watch("ala")}
                   />
-                  {errors.email && (
+                  {errors.ala && (
                     <span className="text-destructive font-semibold">
-                      {errors.email.message}
+                      {errors.ala.message}
                     </span>
                   )}
                 </div>
