@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
+import { differenceInMinutes } from "date-fns";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -46,6 +47,37 @@ export const columns: ColumnDef<CallsType>[] = [
     accessorKey: "termino",
     header: "Fim da Chamada",
     cell: ({ row }) => row.original.termino || <span>Em Andamento.</span>,
+  },
+  {
+    id: "duracao", // Coluna sem chave no objeto original
+    header: "Duração",
+    cell: ({ row }) => {
+      const { data, inicio, termino } = row.original;
+
+      if (!termino) {
+        return <span>Em Andamento</span>;
+      }
+
+      // Combina a data com o horário para formar uma string no formato ISO
+      const inicioDate = new Date(`${data}T${inicio}`);
+      const terminoDate = new Date(`${data}T${termino}`);
+
+      if (isNaN(inicioDate.getTime()) || isNaN(terminoDate.getTime())) {
+        return <span>Data Inválida</span>;
+      }
+
+      // Calcula a diferença total em minutos
+      const diffInMinutes = differenceInMinutes(terminoDate, inicioDate);
+      const hours = Math.floor(diffInMinutes / 60);
+      const minutes = diffInMinutes % 60;
+
+      return (
+        <span>
+          {hours > 0 ? `${hours}h ` : ""}
+          {minutes} min
+        </span>
+      );
+    },
   },
   {
     accessorKey: "responsavel",
