@@ -52,8 +52,8 @@ export default function CalledMonitoring() {
 
   const onSubmit = async (data: createNourseFormData) => {
     // Verifica se pelo menos um campo foi preenchido
-    const hasAnyValue = Object.values(data).some(value =>
-      value !== undefined && value !== null && value !== ''
+    const hasAnyValue = Object.values(data).some(
+      (value) => value !== undefined && value !== null && value !== ""
     );
 
     if (!hasAnyValue) {
@@ -63,9 +63,9 @@ export default function CalledMonitoring() {
     }
 
     setIsLoading(true);
-    console.log(data)
+    console.log(data);
     try {
-      const response = await api.post('/chamadas', data);
+      const response = await api.post("/chamadas", data);
 
       const sortedCalls = response.data.sort((a: CallsType, b: CallsType) => {
         // Chamadas sem término (call_end undefined ou null) vêm primeiro
@@ -84,7 +84,7 @@ export default function CalledMonitoring() {
 
       setCalls(sortedCalls);
     } catch (error) {
-      console.error('Erro ao buscar chamadas:', error);
+      console.error("Erro ao buscar chamadas:", error);
       // Você pode usar aqui o componente de toast da sua aplicação se tiver um
       alert("Erro ao buscar chamadas. Tente novamente.");
     } finally {
@@ -109,13 +109,13 @@ export default function CalledMonitoring() {
     }
   }, [time]);
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     api
       .post("/chamadas")
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         const initCalss: CallsType[] = res.data;
         const sortedCalls = initCalss.sort((a, b) => {
           // Chamadas sem término (call_end undefined ou null) vêm primeiro
@@ -145,8 +145,8 @@ export default function CalledMonitoring() {
         //       )
         //     : "",
         // }));
-        console.log("sortedCalls")
-        console.log(sortedCalls)
+        console.log("sortedCalls");
+        console.log(sortedCalls);
 
         setCalls(sortedCalls);
       })
@@ -169,7 +169,10 @@ export default function CalledMonitoring() {
       <ScrollArea className="flex-1 h-[100vh]">
         <div className="w-full min-h-[100vh] flex flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-muted p-6 w-full">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col bg-muted p-6 w-full"
+            >
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
                 <Button type="submit" variant={"link"} disabled={isLoading}>
                   {isLoading ? "Buscando..." : "Buscar"}
@@ -194,7 +197,11 @@ export default function CalledMonitoring() {
                   </div>
                   <div>
                     <Label htmlFor="responsavel">Responsável</Label>
-                    <Input {...register("responsavel")} id="responsavel" type="text" />
+                    <Input
+                      {...register("responsavel")}
+                      id="responsavel"
+                      type="text"
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 w-1/3">
@@ -221,7 +228,11 @@ export default function CalledMonitoring() {
                   </div>
                   <div>
                     <Label htmlFor="idChamada">ID da chamada</Label>
-                    <Input {...register("idChamada")} id="idChamada" type="text" />
+                    <Input
+                      {...register("idChamada")}
+                      id="idChamada"
+                      type="text"
+                    />
                   </div>
                 </div>
               </div>
