@@ -45,8 +45,8 @@ export default function NourseMonitoring() {
 
   const onSubmit = async (data: createNourseFormData) => {
     // Verifica se pelo menos um campo foi preenchido
-    const hasAnyValue = Object.values(data).some(value =>
-      value !== undefined && value !== null && value !== ''
+    const hasAnyValue = Object.values(data).some(
+      (value) => value !== undefined && value !== null && value !== ""
     );
 
     if (!hasAnyValue) {
@@ -56,11 +56,15 @@ export default function NourseMonitoring() {
 
     setIsLoading(true);
     try {
-      const response = await api.post('/enfermeiros/buscar', data);
+      const response = await api.post("/enfermeiros/buscar", data);
       setNourses(response.data);
     } catch (error: any) {
-      console.error('Erro ao buscar enfermeiros:', error);
-      alert(error.response?.data?.details || error.response?.data?.error || "Erro ao buscar enfermeiros. Tente novamente.");
+      console.error("Erro ao buscar enfermeiros:", error);
+      alert(
+        error.response?.data?.details ||
+          error.response?.data?.error ||
+          "Erro ao buscar enfermeiros. Tente novamente."
+      );
       setNourses([]); // Limpa a lista em caso de erro
     } finally {
       setIsLoading(false);
@@ -68,7 +72,15 @@ export default function NourseMonitoring() {
     }
   };
 
-  useEffect(() => {
+  const onClear = () => {
+    setValue("nome", "");
+    setValue("ala", "");
+    setValue("cargo", "");
+    setValue("nfc", "");
+    fechNourses();
+  };
+
+  const fechNourses = () => {
     api
       .get("/enfermeiros")
       .then((res) => {
@@ -79,6 +91,10 @@ export default function NourseMonitoring() {
         console.log(err);
         setNourses([]);
       });
+  };
+
+  useEffect(() => {
+    fechNourses();
   }, []);
 
   return (
@@ -87,8 +103,22 @@ export default function NourseMonitoring() {
       <ScrollArea className="flex-1 h-[100vh]">
         <div className="min-h-[100vh] flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col bg-muted p-6 w-full">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col bg-muted p-6 w-full"
+            >
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onClear();
+                  }}
+                  variant={"link"}
+                  className="text-destructive"
+                  disabled={isLoading}
+                >
+                  Limpar
+                </Button>
                 <Button type="submit" variant={"link"} disabled={isLoading}>
                   {isLoading ? "Buscando..." : "Buscar"}
                 </Button>

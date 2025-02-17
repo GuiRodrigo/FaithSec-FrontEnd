@@ -109,9 +109,17 @@ export default function CalledMonitoring() {
     }
   }, [time]);
 
-  useEffect(() => {}, []);
+  const onClear = () => {
+    setValue("responsavel", "");
+    setValue("data", "");
+    setValue("time", "");
+    setCalls([]);
+    setDate(undefined);
+    setTime("");
+    fechCals();
+  };
 
-  useEffect(() => {
+  const fechCals = () => {
     api
       .post("/chamadas")
       .then((res) => {
@@ -151,6 +159,10 @@ export default function CalledMonitoring() {
         setCalls(sortedCalls);
       })
       .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    fechCals();
   }, []);
 
   // Função para contar chamadas de emergência
@@ -174,6 +186,17 @@ export default function CalledMonitoring() {
               className="flex flex-col bg-muted p-6 w-full"
             >
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onClear();
+                  }}
+                  variant={"link"}
+                  className="text-destructive"
+                  disabled={isLoading}
+                >
+                  Limpar
+                </Button>
                 <Button type="submit" variant={"link"} disabled={isLoading}>
                   {isLoading ? "Buscando..." : "Buscar"}
                 </Button>
