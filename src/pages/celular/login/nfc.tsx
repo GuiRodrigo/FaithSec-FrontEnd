@@ -17,6 +17,10 @@ export default function NFCVerification() {
   const socket = io("http://172.20.10.2:4000");
 
   function handleLogin() {
+    if (nfcValue.trim() === "") {
+      alert("Informe o número do seu crachá!");
+      return;
+    }
     setIsLoading(true);
     api
       .post("/login-enfermeiro", {

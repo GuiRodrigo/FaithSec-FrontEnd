@@ -26,8 +26,11 @@ interface AuthContextData {
 }
 
 export interface UserData {
-  username: string;
-  password: string;
+  id: number;
+  cargo: string;
+  nome?: string;
+  cpf: string;
+  senha: string;
 }
 
 export interface NourseLogin {
