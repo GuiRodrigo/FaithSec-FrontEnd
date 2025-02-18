@@ -54,7 +54,7 @@ export const clientStorageKey = "@faith-sec-admin:user-data-1.0.0";
 export const nourseStorageKey = "@faith-sec-admin:nourse-data-1.0.0";
 
 // Criar a conexão do socket FORA do componente para evitar múltiplas conexões
-const socket = io("http://192.168.217.98:4000", {
+const socket = io("http://172.20.10.2:4000", {
   autoConnect: false, // Evita conexão automática, controlamos isso manualmente
 });
 

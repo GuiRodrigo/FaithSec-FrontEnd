@@ -14,7 +14,7 @@ export default function NFCVerification() {
   const [nfcValue, setNfcValue] = useState("");
   const { nourseLogin, setNourseData } = useAuth();
   const router = useRouter();
-  const socket = io("http://192.168.217.98:4000");
+  const socket = io("http://172.20.10.2:4000");
 
   function handleLogin() {
     setIsLoading(true);

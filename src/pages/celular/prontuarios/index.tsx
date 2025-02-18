@@ -103,7 +103,7 @@ export default function Prontuarios() {
         {filteredPacientes.map((paciente) => (
           <div
             onClick={() => {
-              router.push(`celular/prontuarios/${paciente.idPaciente}`);
+              router.push(`prontuarios/${paciente.idPaciente}`);
             }}
             key={paciente.idPaciente}
             className="bg-[#d6d6d6] p-4 rounded-lg shadow-md cursor-pointer"
