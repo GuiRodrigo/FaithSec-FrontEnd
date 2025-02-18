@@ -11,6 +11,7 @@ Faith-Sec é o frontend de um sistema de chamada de enfermagem, contendo duas ap
 
 - Node.js (recomenda-se a versão LTS)
 - npm ou yarn
+- Backend rodando (é necessário executar o backend disponível no repositório [FaithSec_BackEnd](https://github.com/gabrielleSantosOliveira/FaithSec_BackEnd)).
 
 ## Instalação e Execução
 
@@ -18,15 +19,17 @@ Faith-Sec é o frontend de um sistema de chamada de enfermagem, contendo duas ap
    ```sh
    npm install
    ```
-2. Execute o ambiente de desenvolvimento:
+2. Antes de rodar a aplicação, altere todos os locais onde o IP **172.20.10.2** está definido, substituindo pelo endereço IP da sua rede atual.
+
+3. Execute o ambiente de desenvolvimento:
    ```sh
    npm run dev
    ```
-3. Acesse a aplicação no navegador:
+4. Acesse a aplicação no navegador:
    ```
    http://localhost:3000
    ```
-4. Para acessar a versão mobile, utilize:
+5. Para acessar a versão mobile, utilize:
    ```
    http://localhost:3000/celular
    ```
@@ -72,5 +75,3 @@ Faith-Sec é o frontend de um sistema de chamada de enfermagem, contendo duas ap
 
 Este projeto está sob a licença MIT. Para mais detalhes, consulte o arquivo `LICENSE`.
 
-
- 
