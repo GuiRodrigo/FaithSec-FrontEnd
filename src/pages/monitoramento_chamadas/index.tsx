@@ -20,7 +20,17 @@ import { DataTable } from "@/components/ui/data-table";
 import { format } from "date-fns";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import api from "@/service/api";
+import PaginationComponent from "@/components/compounds/PaginationComponent";
 
 const createNourseFormSchema = z.object({
   responsavel: z.string().optional(),
@@ -37,6 +47,8 @@ export default function CalledMonitoring() {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [time, setTime] = useState<string>("");
+  const [limitPagination, setLimitePagination] = useState<number>();
+  const [pagination, setPagination] = useState<number>();
   const [calls, setCalls] = useState<CallsType[]>([]);
 
   const {
@@ -51,46 +63,50 @@ export default function CalledMonitoring() {
   });
 
   const onSubmit = async (data: createNourseFormData) => {
+    console.log(getValues());
     // Verifica se pelo menos um campo foi preenchido
-    const hasAnyValue = Object.values(data).some(
-      (value) => value !== undefined && value !== null && value !== ""
-    );
+    // const hasAnyValue = Object.values(data).some(
+    //   (value) => value !== undefined && value !== null && value !== ""
+    // );
 
-    if (!hasAnyValue) {
-      // Você pode usar aqui o componente de toast da sua aplicação se tiver um
-      alert("Preencha pelo menos um campo para realizar a busca");
-      return;
-    }
+    // if (!hasAnyValue) {
+    //   // Você pode usar aqui o componente de toast da sua aplicação se tiver um
+    //   alert("Preencha pelo menos um campo para realizar a busca");
+    //   return;
+    // }
 
-    setIsLoading(true);
-    console.log(data);
-    try {
-      const response = await api.post("/chamadas", data);
+    // setIsLoading(true);
+    // console.log(data);
+    // try {
+    //   const response = await api.post("/chamadas", {
+    //     ...data,
+    //     page: pagination,
+    //   });
 
-      const sortedCalls = response.data.sort((a: CallsType, b: CallsType) => {
-        // Chamadas sem término (call_end undefined ou null) vêm primeiro
-        if (!a.termino && b.termino) return -1;
-        if (a.termino && !b.termino) return 1;
+    //   const sortedCalls = response.data.sort((a: CallsType, b: CallsType) => {
+    //     // Chamadas sem término (call_end undefined ou null) vêm primeiro
+    //     if (!a.termino && b.termino) return -1;
+    //     if (a.termino && !b.termino) return 1;
 
-        // Depois, ordenar por criticidade (emergências primeiro)
-        if (a.criticidade === "Emergencia" && b.criticidade === "Auxilio")
-          return -1;
-        if (a.criticidade === "Auxilio" && b.criticidade === "Emergencia")
-          return 1;
+    //     // Depois, ordenar por criticidade (emergências primeiro)
+    //     if (a.criticidade === "Emergencia" && b.criticidade === "Auxilio")
+    //       return -1;
+    //     if (a.criticidade === "Auxilio" && b.criticidade === "Emergencia")
+    //       return 1;
 
-        // Por fim, ordenar por call_start (do menor para o maior)
-        return Number(a.inicio) - Number(b.inicio);
-      });
+    //     // Por fim, ordenar por call_start (do menor para o maior)
+    //     return Number(a.inicio) - Number(b.inicio);
+    //   });
 
-      setCalls(sortedCalls);
-    } catch (error) {
-      console.error("Erro ao buscar chamadas:", error);
-      // Você pode usar aqui o componente de toast da sua aplicação se tiver um
-      alert("Erro ao buscar chamadas. Tente novamente.");
-    } finally {
-      setIsLoading(false);
-      setOpen(true);
-    }
+    //   setCalls(sortedCalls);
+    // } catch (error) {
+    //   console.error("Erro ao buscar chamadas:", error);
+    //   // Você pode usar aqui o componente de toast da sua aplicação se tiver um
+    //   alert("Erro ao buscar chamadas. Tente novamente.");
+    // } finally {
+    //   setIsLoading(false);
+    //   setOpen(true);
+    // }
   };
 
   useEffect(() => {
@@ -111,20 +127,23 @@ export default function CalledMonitoring() {
 
   const onClear = () => {
     setValue("responsavel", "");
+    setValue("criticidade", "");
     setValue("data", "");
     setValue("time", "");
     setCalls([]);
     setDate(undefined);
     setTime("");
+    setPagination(1);
     fechCals();
   };
 
   const fechCals = () => {
     api
-      .post("/chamadas")
+      .post("/chamadas", { ...getValues(), page: pagination })
       .then((res) => {
-        console.log(res.data);
-        const initCalss: CallsType[] = res.data;
+        setLimitePagination(res.data.totalPaginas);
+        setPagination(res.data.paginaAtual);
+        const initCalss: CallsType[] = res.data.chamadas;
         const sortedCalls = initCalss.sort((a, b) => {
           // Chamadas sem término (call_end undefined ou null) vêm primeiro
           if (!a.termino && b.termino) return -1;
@@ -153,8 +172,6 @@ export default function CalledMonitoring() {
         //       )
         //     : "",
         // }));
-        console.log("sortedCalls");
-        console.log(sortedCalls);
 
         setCalls(sortedCalls);
       })
@@ -163,7 +180,7 @@ export default function CalledMonitoring() {
 
   useEffect(() => {
     fechCals();
-  }, []);
+  }, [pagination]);
 
   // Função para contar chamadas de emergência
   const countEmergencies = (): number => {
@@ -182,7 +199,7 @@ export default function CalledMonitoring() {
         <div className="w-full min-h-[100vh] flex flex-col relative justify-center items-center bg-primary pt-20 ">
           <div className="flex flex-col w-full px-28 mt-5 h-full">
             <form
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(fechCals)}
               className="flex flex-col bg-muted p-6 w-full"
             >
               <div className="w-full border-b-2 border-tertiary items-center flex justify-end">
@@ -268,8 +285,13 @@ export default function CalledMonitoring() {
                 QUANTIDADE DE CHAMADA DE AUXÍLIO: {countAuxilio()}
               </span>
             </div>
-            <div className="py-5">
+            <div className="py-5 gap-4 flex flex-col">
               <DataTable columns={columns} data={calls} />
+              <PaginationComponent
+                currentPage={pagination ?? 1}
+                totalPages={limitPagination ?? 1}
+                onPageChange={(page) => setPagination(page)}
+              />
             </div>
           </div>
         </div>

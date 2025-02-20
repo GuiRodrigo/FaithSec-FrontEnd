@@ -49,7 +49,7 @@ export const columns: ColumnDef<CallsType>[] = [
     cell: ({ row }) => row.original.termino || <span>Em Andamento.</span>,
   },
   {
-    id: "duracao", // Coluna sem chave no objeto original
+    id: "duracao",
     header: "Duração",
     cell: ({ row }) => {
       const { data, inicio, termino } = row.original;
@@ -58,7 +58,7 @@ export const columns: ColumnDef<CallsType>[] = [
         return <span>Em Andamento</span>;
       }
 
-      // Combina a data com o horário para formar uma string no formato ISO
+      // Combina a data com o horário para formar um objeto Date
       const inicioDate = new Date(`${data}T${inicio}`);
       const terminoDate = new Date(`${data}T${termino}`);
 
@@ -66,15 +66,19 @@ export const columns: ColumnDef<CallsType>[] = [
         return <span>Data Inválida</span>;
       }
 
-      // Calcula a diferença total em minutos
-      const diffInMinutes = differenceInMinutes(terminoDate, inicioDate);
-      const hours = Math.floor(diffInMinutes / 60);
-      const minutes = diffInMinutes % 60;
+      // Calcula a diferença total em segundos
+      const diffInSeconds = Math.floor(
+        (terminoDate.getTime() - inicioDate.getTime()) / 1000
+      );
+      const hours = Math.floor(diffInSeconds / 3600);
+      const minutes = Math.floor((diffInSeconds % 3600) / 60);
+      const seconds = diffInSeconds % 60;
 
       return (
         <span>
           {hours > 0 ? `${hours}h ` : ""}
-          {minutes} min
+          {minutes > 0 ? `${minutes}m ` : ""}
+          {seconds}s
         </span>
       );
     },

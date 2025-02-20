@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import InputMask from "react-input-mask";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
@@ -9,12 +10,13 @@ import { Label } from "@/components/ui/label";
 import { clientStorageKey, useAuth } from "@/hooks/auth";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
+import api from "@/service/api";
 
 const createUserFormSchema = z.object({
-  username: z
+  cpf: z
     .string()
-    .nonempty("Usuário é obrigatório.")
-    .regex(/^(?!\s*$)[A-Za-z\s]+$/i, "Somente letras"),
+    .nonempty("CPF é obrigatório.")
+    .regex(/^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/, "CPF inválido"),
   password: z.string().nonempty("Senha é obrigatória."),
 });
 
@@ -29,6 +31,7 @@ export default function Login() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<createUserFormData>({
     resolver: zodResolver(createUserFormSchema),
@@ -36,11 +39,30 @@ export default function Login() {
 
   const onSubmit = (data: createUserFormData) => {
     setIsLoading(true);
-    setUserData(data);
-    const userInfoJson = JSON.stringify(data);
-    localStorage.setItem(clientStorageKey, userInfoJson);
-    router.push("/home");
-    setIsLoading(false);
+    api
+      .post("/login-admin", {
+        cpf: data.cpf,
+        senha: data.password,
+      })
+      .then((res) => {
+        console.log(res);
+        if (res.data.success) {
+          setUserData(res.data.usuario);
+          const userInfoJson = JSON.stringify(res.data.usuario);
+          localStorage.setItem(clientStorageKey, userInfoJson);
+          router.push("/home");
+        } else {
+          setError("cpf", { message: "CPF ou senha inválidos." });
+          setError("password", { message: "CPF ou senha inválidos." });
+        }
+      })
+      .catch((err) => {
+        setError("cpf", { message: "CPF ou senha inválidos." });
+        setError("password", { message: "CPF ou senha inválidos." });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -60,14 +82,17 @@ export default function Login() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="username">Usuário</Label>
-              <Input
-                {...register("username")}
-                id="username"
-                type="text"
+              <Label htmlFor="cpf">CPF</Label>
+
+              <InputMask
+                {...register("cpf")}
+                id="cpf"
+                mask="999.999.999-99"
+                placeholder="000.000.000-00"
                 required
+                className="border border-gray-300 rounded px-3 py-1.5"
               />
-              {errors.username && <span>{errors.username.message}</span>}
+              {errors.cpf && <span>{errors.cpf.message}</span>}
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">

@@ -55,10 +55,9 @@ export default function TwoStepVerification() {
         }
       })
       .catch((err) => {
-        alert(err);
         setError("cpf", { message: "CPF ou senha inválidos" });
         setError("password", { message: "CPF ou senha inválidos" });
-        // alert("Usuário ou senha inválidos");
+        alert("Usuário ou senha inválidos");
       })
       .finally(() => {
         setIsLoading(false);
