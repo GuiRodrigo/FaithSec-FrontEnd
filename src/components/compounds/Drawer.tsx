@@ -75,6 +75,20 @@ export function Drawer({ isExpanded = false }: { isExpanded?: boolean }) {
     if (!storageData && !userData) router.push("/"); // Caso não haja dados de usuário, redireciona para a página inicial
   }, [userData]);
 
+  useEffect(() => {
+    router.prefetch("/");
+    router.prefetch("/home");
+    router.prefetch("/manual");
+    router.prefetch("/manual/sistema");
+    router.prefetch("/manual/aplicativo");
+    router.prefetch("/prontuarios");
+    router.prefetch("/monitoramento_enfermeiro");
+    router.prefetch("/monitoramento_chamadas");
+    router.prefetch("/cadastro_enfermeiro");
+    router.prefetch("/cracha_hab_desab");
+    router.prefetch("/configuracoes");
+  }, []);
+
   return (
     <div
       className={`flex z-50 flex-col py-10 relative transition-all duration-300 ease-in-out ${

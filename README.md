@@ -19,7 +19,7 @@ Faith-Sec é o frontend de um sistema de chamada de enfermagem, contendo duas ap
    ```sh
    npm install
    ```
-2. Antes de rodar a aplicação, altere todos os locais onde o IP **172.20.10.2** está definido, substituindo pelo endereço IP da sua rede atual.
+2. Antes de rodar a aplicação, altere o valor da constante IPAdress no arquivo src/service/api.tsx, substituindo pelo endereço IP da sua rede atual.
 
 3. Execute o ambiente de desenvolvimento:
    ```sh
@@ -74,4 +74,3 @@ Faith-Sec é o frontend de um sistema de chamada de enfermagem, contendo duas ap
 ## Licença
 
 Este projeto está sob a licença MIT. Para mais detalhes, consulte o arquivo `LICENSE`.
-

@@ -37,9 +37,7 @@ export default function Settings() {
             </div>
             <div className="p-4 rounded-xl w-[34vw] flex flex-col bg-secondary text-secondary-foreground shadow-md">
               <span className="font-bold">USUÁRIO</span>
-              <span className="font-semibold">
-                Informações, termos de uso e privacidade.
-              </span>
+              <span className="font-semibold">Informações.</span>
             </div>
           </div>
         </div>

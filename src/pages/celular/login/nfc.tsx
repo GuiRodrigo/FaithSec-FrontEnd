@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import api from "@/service/api";
+import api, { IPAdress } from "@/service/api";
 import { useAuth } from "@/hooks/auth";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/router";
@@ -14,7 +14,7 @@ export default function NFCVerification() {
   const [nfcValue, setNfcValue] = useState("");
   const { nourseLogin, setNourseData } = useAuth();
   const router = useRouter();
-  const socket = io("http://172.20.10.2:4000");
+  const socket = io(`http://${IPAdress}:4000/`);
 
   function handleLogin() {
     if (nfcValue.trim() === "") {
