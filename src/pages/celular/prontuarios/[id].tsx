@@ -66,30 +66,10 @@ export default function Paciente() {
           </span>
         </div>
         <div className="text-sm font-medium">
-          <b>Telefone:</b> {paciente?.telefone1 ?? ""}
-        </div>
-        <div className="flex justify-between text-sm font-medium">
-          <div className="text-sm font-medium">
-            <b>Acompanhante:</b> {paciente?.pessoaRespon ?? ""}
-          </div>
-          <div className="text-sm font-medium">
-            <b>Telefone:</b> (31) 97552-4070
-          </div>
-        </div>
-        <div className="text-sm font-medium">
           <b>Alergias:</b> Sem comorbidades relevantes
         </div>
         <div className="text-sm font-medium">
-          <b>Cor:</b> {paciente?.cor ?? ""}
-        </div>
-        <div className="text-sm font-medium">
           <b>Sexo:</b> {paciente?.sexo ?? ""}
-        </div>
-        <div className="text-sm font-medium">
-          <b>Profissão:</b> {paciente?.profissao ?? ""}
-        </div>
-        <div className="text-sm font-medium">
-          <b>Endereço:</b> {paciente?.endereco ?? ""}
         </div>
         <div className="text-sm font-medium">
           <b>Tipo Sanguíneo:</b> A+
