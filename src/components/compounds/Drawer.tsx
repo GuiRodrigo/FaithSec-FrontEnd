@@ -19,7 +19,7 @@ const drawerItens: Item[] = [
   { screen: "cadastro_enfermeiro", title: "CADASTRO ENFERMEIRO" },
   { screen: "monitoramento_chamadas", title: "MONITORAMENTO CHAMADAS" },
   { screen: "monitoramento_enfermeiro", title: "MONITORAMENTO ENFERMEIROS" },
-  { screen: "cracha_hab_desab", title: "CRACHÁ HABLITAR/DESABILITAR" },
+  { screen: "cracha_hab_desab", title: "CRACHÁ HABILITAR/DESABILITAR" },
   { screen: "manual", title: "MANUAL" },
   { screen: "configuracoes", title: "CONFIGURAÇÕES" },
 ];
