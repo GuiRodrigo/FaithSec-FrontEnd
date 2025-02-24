@@ -1,6 +1,8 @@
 import { CardProfile } from "@/components/compounds/CardProfile";
+import ContactDialog from "@/components/compounds/ContactCard";
 import { Drawer } from "@/components/compounds/Drawer";
 import { DialogPassword } from "@/components/compounds/EditProfileAdmin";
+import UserInfoDialog from "@/components/compounds/UserInfoDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -18,12 +20,7 @@ export default function Settings() {
               <span className="font-bold">ATUALIZAÇÃO</span>
               <span className="font-semibold">Atualização do sistema Web</span>
             </div>
-            <div className="p-4 rounded-xl w-[34vw] flex flex-col bg-secondary text-secondary-foreground shadow-md">
-              <span className="font-bold">CONTATO</span>
-              <span className="font-semibold">
-                Dúvidas? Problemas? Entre em contato com a FaithSec.
-              </span>
-            </div>
+            <ContactDialog />
             <div className="p-4 rounded-xl w-[34vw] flex flex-col bg-secondary text-secondary-foreground shadow-md">
               <span className="font-bold">IDIOMA</span>
               <span className="font-semibold">Idioma da região.</span>
@@ -35,10 +32,7 @@ export default function Settings() {
               <span className="font-bold">TEMA</span>
               <span className="font-semibold">Cores, tema.</span>
             </div>
-            <div className="p-4 rounded-xl w-[34vw] flex flex-col bg-secondary text-secondary-foreground shadow-md">
-              <span className="font-bold">USUÁRIO</span>
-              <span className="font-semibold">Informações.</span>
-            </div>
+            <UserInfoDialog />
           </div>
         </div>
         <CardProfile />

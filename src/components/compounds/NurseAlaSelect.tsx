@@ -6,18 +6,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const nurseAla = [
-  "Internação Geral",
-  "UTI",
-  "nenhum"
-];
+const nurseAla = ["Internação Geral", "UTI", "nenhum"];
 
 function NurseAlaSelect({
   onChange,
   value,
 }: {
-  onChange: (value: string) => void;
-  value: string;
+  onChange: (value: string | undefined) => void;
+  value: string | undefined;
 }) {
   return (
     <Select onValueChange={onChange} value={value}>

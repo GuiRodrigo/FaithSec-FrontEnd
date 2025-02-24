@@ -32,6 +32,7 @@ export interface UserData {
   nome?: string;
   cpf: string;
   senha: string;
+  nfc: string;
 }
 
 export interface NourseLogin {

@@ -22,6 +22,7 @@ import {
 import { columns, NourseType } from "./columns";
 import { DataTable } from "./data-table";
 import { useAuth } from "@/hooks/auth";
+import PaginationComponent from "@/components/compounds/PaginationComponent";
 
 const createNourseFormSchema = z.object({
   nome: z.string().optional(),
@@ -35,6 +36,8 @@ type createNourseFormData = z.infer<typeof createNourseFormSchema>;
 export default function NourseBadge() {
   const { alterTable, setAlterTable } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [limitPagination, setLimitePagination] = useState<number>();
+  const [pagination, setPagination] = useState<number>();
   const [open, setOpen] = useState(false);
   const [nourses, setNourses] = useState<NourseType[]>([]);
 
@@ -62,8 +65,7 @@ export default function NourseBadge() {
 
     setIsLoading(true);
     try {
-      const response = await api.post("/enfermeiros/buscar", data);
-      setNourses(response.data);
+      fechNourses();
     } catch (error: any) {
       console.error("Erro ao buscar enfermeiros:", error);
       alert(
@@ -88,20 +90,25 @@ export default function NourseBadge() {
 
   const fechNourses = () => {
     api
-      .get("/enfermeiros")
+      .post("/enfermeiros/buscar", { ...getValues(), page: pagination })
       .then((res) => {
         console.log(res);
-        setNourses(res.data);
+        setNourses(res.data.enfermeiros);
+        setLimitePagination(res.data.totalPaginas);
+        setPagination(res.data.paginaAtual);
       })
       .catch((err) => {
         console.log(err);
         setNourses([]);
+
+        setLimitePagination(1);
+        setPagination(1);
       });
   };
 
   useEffect(() => {
     fechNourses();
-  }, [alterTable]);
+  }, [pagination, alterTable]);
 
   return (
     <div className="w-[100vw] max-w-[100vw] h-[100v] flex relative">
@@ -184,8 +191,14 @@ export default function NourseBadge() {
                 </div>
               </div>
             </form>
-            <div className="py-5">
+            <div className="py-5 gap-4 flex flex-col">
               <DataTable columns={columns} data={nourses} />
+
+              <PaginationComponent
+                currentPage={pagination ?? 1}
+                totalPages={limitPagination ?? 1}
+                onPageChange={(page) => setPagination(page)}
+              />
             </div>
           </div>
         </div>

@@ -31,8 +31,8 @@ function NurseRoleSelect({
   onChange,
   value,
 }: {
-  onChange: (value: string) => void;
-  value: string;
+  onChange: (value: string | undefined) => void;
+  value: string | undefined;
 }) {
   return (
     <Select onValueChange={onChange} value={value}>

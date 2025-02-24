@@ -6,6 +6,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "../ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -23,8 +25,8 @@ export default function PaginationComponent({
       <PaginationContent>
         {/* Botão de página anterior */}
         <PaginationItem>
-          <PaginationPrevious
-            href="#"
+          <Button
+            className="hover:bg-primary-foreground text-black"
             onClick={(e) => {
               e.preventDefault();
               if (currentPage > 1) {
@@ -32,8 +34,8 @@ export default function PaginationComponent({
               }
             }}
           >
-            Anterior
-          </PaginationPrevious>
+            <ChevronLeft /> Anterior
+          </Button>
         </PaginationItem>
 
         {/* Página anterior */}
@@ -53,9 +55,7 @@ export default function PaginationComponent({
 
         {/* Página atual */}
         <PaginationItem>
-          <PaginationLink href="#" className="font-bold">
-            {currentPage}
-          </PaginationLink>
+          <PaginationLink className="font-bold">{currentPage}</PaginationLink>
         </PaginationItem>
 
         {/* Próxima página */}
@@ -75,8 +75,8 @@ export default function PaginationComponent({
 
         {/* Botão de próxima página */}
         <PaginationItem>
-          <PaginationNext
-            href="#"
+          <Button
+            className="hover:bg-primary-foreground text-black"
             onClick={(e) => {
               e.preventDefault();
               if (currentPage < totalPages) {
@@ -85,7 +85,8 @@ export default function PaginationComponent({
             }}
           >
             Próximo
-          </PaginationNext>
+            <ChevronRight />
+          </Button>
         </PaginationItem>
       </PaginationContent>
     </Pagination>
